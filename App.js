@@ -68,12 +68,28 @@ const App = () => {
 
   const getAnimes = async () => {
     try {
-      const { data } = await clientAnimes.getTest()
-      Reactotron.display({
+      const { data: { data } } = await clientAnimes.getTest()
+      // Reactotron.display({
+      //   name: 'Animes',
+      //   preview: 'Animes',
+      //   value: data,
+      //   important: true
+      // })
+
+      console.tron = Reactotron
+      console.tron.display({
         name: 'Animes',
-        preview: 'Animes',
         value: data,
+        preview: 'Animes All',
         important: true
+      })
+
+      console.tron.display({
+        name: `Anime name: ${data[0]?.anime_name}`,
+        value: data[0],
+        preview: 'Anime index: 0',
+        important: true,
+        image: data[0]?.anime_img
       })
     } catch (error) {
       Reactotron.error(error)
@@ -147,7 +163,7 @@ const App = () => {
     //   value: 'Orange you glad you don\'t know me in real life?',
     //   important: true
     // })
-    // getAnimes()
+    getAnimes()
     // getAnimesError()
     // storeData()
     // testErrorVariable()
