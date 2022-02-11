@@ -6,8 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
-import type {Node} from 'react';
+import React, { useEffect } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -26,7 +25,14 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-const Section = ({children, title}): Node => {
+import Reactotron from 'reactotron-react-native'
+import { clientAnimal } from './client'
+
+if (__DEV__) {
+  import('./ReactotronConfig').then(() => console.log('Reactotron Configured'))
+}
+
+const Section = ({ children, title }) => {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={styles.sectionContainer}>
@@ -52,12 +58,46 @@ const Section = ({children, title}): Node => {
   );
 };
 
-const App: () => Node = () => {
+const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
+  const getAnimals = async () => {
+    try {
+      const { data } = await clientAnimal.getTest()
+      Reactotron.display({
+        name: 'Animals',
+        preview: 'Animals',
+        value: data,
+        important: true
+      })
+    } catch (error) {
+      Reactotron.error(error)
+    }
+  }
+
+  const getAnimalsError = async () => {
+    try {
+      await clientAnimal.getTestError()
+    } catch (error) {
+      Reactotron.error(error)
+    }
+  }
+
+  useEffect(() => {
+    // Reactotron.log('hello rendering world')
+    // Reactotron.display({
+    //   name: 'ORANGE',
+    //   preview: 'Who?',
+    //   value: 'Orange you glad you don\'t know me in real life?',
+    //   important: true
+    // })
+    getAnimals()
+    getAnimalsError()
+  }, [])
 
   return (
     <SafeAreaView style={backgroundStyle}>
