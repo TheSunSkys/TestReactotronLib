@@ -26,7 +26,8 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import Reactotron from 'reactotron-react-native'
-import { clientAnimal } from './client'
+import { clientAnimes } from './client'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 if (__DEV__) {
   import('./ReactotronConfig').then(() => console.log('Reactotron Configured'))
@@ -65,12 +66,12 @@ const App = () => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const getAnimals = async () => {
+  const getAnimes = async () => {
     try {
-      const { data } = await clientAnimal.getTest()
+      const { data } = await clientAnimes.getTest()
       Reactotron.display({
-        name: 'Animals',
-        preview: 'Animals',
+        name: 'Animaes',
+        preview: 'Animaes',
         value: data,
         important: true
       })
@@ -79,12 +80,40 @@ const App = () => {
     }
   }
 
-  const getAnimalsError = async () => {
+  const getAnimesError = async () => {
     try {
-      await clientAnimal.getTestError()
+      await clientAnimes.getTestError()
     } catch (error) {
       Reactotron.error(error)
     }
+  }
+
+  const testErrorVariable = () => {
+    const a = variError
+  }
+
+  const storeData = async () => {
+    try {
+      await AsyncStorage.setItem('test', 'value set data')
+      setTimeout(async () => {
+        await AsyncStorage.removeItem('test')
+      }, 1000);
+    } catch (error) {
+      Reactotron.error(error?.message)
+    }
+  }
+
+  const slowFunction = async () => {
+    const bench = Reactotron.benchmark("slow function benchmark")
+
+    // Code that does thing A
+    bench.step("Thing A", storeData())
+
+    // Code that does thing B
+    bench.step("Thing B", getAnimes())
+
+    // Code that does thing C
+    bench.stop("Thing C")
   }
 
   useEffect(() => {
@@ -95,8 +124,19 @@ const App = () => {
     //   value: 'Orange you glad you don\'t know me in real life?',
     //   important: true
     // })
-    getAnimals()
-    getAnimalsError()
+    // getAnimes()
+    // getAnimesError()
+    // storeData()
+    // testErrorVariable()
+    // Reactotron.onCustomCommand({
+    //   command: "test2",
+    //   handler: () => console.log("This is an example 2"),
+
+    //   // Optional settings
+    //   title: "A thing", // This shows on the button
+    //   description: "The desc", // This shows below the button
+    // })
+    slowFunction()
   }, [])
 
   return (
