@@ -70,8 +70,8 @@ const App = () => {
     try {
       const { data } = await clientAnimes.getTest()
       Reactotron.display({
-        name: 'Animaes',
-        preview: 'Animaes',
+        name: 'Animes',
+        preview: 'Animes',
         value: data,
         important: true
       })
@@ -103,17 +103,40 @@ const App = () => {
     }
   }
 
+  const numArr = [1, 2, 4, 5, 6, 7, 8, 10]
+
+  const getMaxValueA = () => {
+    const max = numArr.reduce(function (p, v) {
+      return (p > v ? p : v);
+    });
+
+    Reactotron.display({
+      name: 'Function: A',
+      preview: 'MAX?',
+      value: max,
+      important: true
+    })
+  }
+
+  const getMaxValueB = () => {
+    const max = Math.max(...numArr)
+
+    Reactotron.display({
+      name: 'Function: B',
+      preview: 'MAX?',
+      value: max,
+      important: true
+    })
+  }
+
   const slowFunction = async () => {
-    const bench = Reactotron.benchmark("slow function benchmark")
+    const bench = Reactotron.benchmark("MAX Function benchmark")
 
     // Code that does thing A
-    bench.step("Thing A", storeData())
+    bench.step("Function A", getMaxValueA())
 
     // Code that does thing B
-    bench.step("Thing B", getAnimes())
-
-    // Code that does thing C
-    bench.stop("Thing C")
+    bench.stop("Function B", getMaxValueB())
   }
 
   useEffect(() => {
